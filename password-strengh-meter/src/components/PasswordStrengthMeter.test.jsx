@@ -5,75 +5,111 @@ import PasswordStrengthMeter from './PasswordStrengthMeter'
 
 describe('PasswordStrengthMeter', () => {
   it('renders password input', () => {
-    render(<PasswordStrengthMeter />)
+        render(<PasswordStrengthMeter />)
 
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
+        expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
   })
 
-  it('shows "vacía" initially', () => {
-    render(<PasswordStrengthMeter />)
+    it('shows "vacía" initially', () => {
+        render(<PasswordStrengthMeter />)
 
-    expect(screen.getByText('vacía')).toBeInTheDocument()
-  })
+        expect(screen.getByText('vacía')).toBeInTheDocument()
+    })
 
-  it('shows "débil" for short password', async () => {
-    const user = userEvent.setup()
+    it('shows "débil" for short password', async () => {
+        const user = userEvent.setup()
 
-    render(<PasswordStrengthMeter />)
+        render(<PasswordStrengthMeter />)
 
-    const input = screen.getByLabelText(/password/i)
+        const input = screen.getByLabelText(/password/i)
 
-    await user.type(input, 'abc')
+        await user.type(input, 'abc')
 
-    expect(screen.getByText('débil')).toBeInTheDocument()
-  })
+        expect(screen.getByText('débil')).toBeInTheDocument()
+    })
 
-  it('shows "media" for medium password', async () => {
-    const user = userEvent.setup()
+    it('shows "media" for medium password', async () => {
+        const user = userEvent.setup()
 
-    render(<PasswordStrengthMeter />)
+        render(<PasswordStrengthMeter />)
 
-    const input = screen.getByLabelText(/password/i)
+        const input = screen.getByLabelText(/password/i)
 
-    await user.type(input, 'abcdefgh')
+        await user.type(input, 'abcdefgh')
 
-    expect(screen.getByText('media')).toBeInTheDocument()
-  })
+        expect(screen.getByText('media')).toBeInTheDocument()
+    })
 
-  it('shows "fuerte" for password with numbers', async () => {
-    const user = userEvent.setup()
+    it('shows "fuerte" for password with numbers', async () => {
+        const user = userEvent.setup()
 
-    render(<PasswordStrengthMeter />)
+        render(<PasswordStrengthMeter />)
 
-    const input = screen.getByLabelText(/password/i)
+        const input = screen.getByLabelText(/password/i)
 
-    await user.type(input, 'abcd1234')
+        await user.type(input, 'abcd1234')
 
-    expect(screen.getByText('fuerte')).toBeInTheDocument()
-  })
+        expect(screen.getByText('fuerte')).toBeInTheDocument()
+    })
 
-  it('shows "muy fuerte" for password with number and symbol', async () => {
-    const user = userEvent.setup()
+    it('shows "muy fuerte" for password with number and symbol', async () => {
+        const user = userEvent.setup()
 
-    render(<PasswordStrengthMeter />)
+        render(<PasswordStrengthMeter />)
 
-    const input = screen.getByLabelText(/password/i)
+        const input = screen.getByLabelText(/password/i)
 
-    await user.type(input, 'abcd1234!')
+        await user.type(input, 'abcd1234!')
 
-    expect(screen.getByText('muy fuerte')).toBeInTheDocument()
-  })
+        expect(screen.getByText('muy fuerte')).toBeInTheDocument()
+    })
 
   it('returns to "vacía" when input is cleared', async () => {
-    const user = userEvent.setup()
+        const user = userEvent.setup()
 
-    render(<PasswordStrengthMeter />)
+        render(<PasswordStrengthMeter />)
 
-    const input = screen.getByLabelText(/password/i)
+        const input = screen.getByLabelText(/password/i)
 
-    await user.type(input, 'abcd1234!')
-    await user.clear(input)
+        await user.type(input, 'abcd1234!')
+        await user.clear(input)
 
-    expect(screen.getByText('vacía')).toBeInTheDocument()
+        expect(screen.getByText('vacía')).toBeInTheDocument()
   })
+
+    it('shows empty progress bar initially', () => {
+        render(<PasswordStrengthMeter />)
+
+        const bar = screen.getByTestId('strength-bar')
+
+        expect(bar).toHaveStyle({ width: '0%' })
+    })
+
+    it('updates progress bar for weak password', async () => {
+        const user = userEvent.setup()
+
+        render(<PasswordStrengthMeter />)
+
+        const input = screen.getByLabelText(/password/i)
+
+        await user.type(input, 'abc')
+
+        const bar = screen.getByTestId('strength-bar')
+
+        expect(bar).toHaveStyle({ width: '25%' })
+    })
+
+    it('updates progress bar for very strong password', async () => {
+        const user = userEvent.setup()
+
+        render(<PasswordStrengthMeter />)
+
+        const input = screen.getByLabelText(/password/i)
+
+        await user.type(input, 'abcd1234!')
+
+        const bar = screen.getByTestId('strength-bar')
+
+        expect(bar).toHaveStyle({ width: '100%' })
+    })
 })
