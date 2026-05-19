@@ -8,6 +8,13 @@ const strengthLevels = {
   fuerte: 75,
   'muy fuerte': 100,
 }
+const strengthColors = {
+  vacía: '#cccccc',
+  débil: '#ff4d4d',
+  media: '#ffa500',
+  fuerte: '#9acd32',
+  'muy fuerte': '#008000',
+}
 
 export default function PasswordStrengthMeter() {
   const [password, setPassword] = useState('')
@@ -51,7 +58,7 @@ export default function PasswordStrengthMeter() {
           style={{
             height: '100%',
             width: `${strengthLevels[strength]}%`,
-            backgroundColor: 'green',
+            backgroundColor: strengthColors[strength],
             transition: 'width 0.3s ease',
           }}
         />
